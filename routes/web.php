@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MyPageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,13 +27,22 @@ Route::prefix('admin')->group(function () {
     Route::get('/', function () {
         return 'admin main';
     });
+
     Route::any('/auth', function () {
         return 'admin auth';
-    });
+    })->middleware('throttle:auth_fifth');
+
     Route::match(['get', 'post'],'/products', function () {
         return 'admin products';
     });
+
     Route::any('/clients', function () {
         return 'admin clients';
     });
 });
+
+Route::get('/secretpage', function () {
+    return 'secretpage';
+})->middleware('store.access.key');
+
+Route::get('/mypage', [MyPageController::class, 'mypage']);
